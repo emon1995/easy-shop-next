@@ -1,7 +1,7 @@
 "use client";
 
 import { afterLoginNavData, beforeLoginNavData } from "@/data/navData";
-// import useAuth from "@/hooks/useAuth";
+import useAuth from "@/hooks/useAuth";
 // import useCart from "@/hooks/useCart";
 import useTheme from "@/hooks/useTheme";
 import Image from "next/image";
@@ -12,12 +12,12 @@ import { toast } from "react-hot-toast";
 import NavLink from "./NavLink";
 
 const Navbar = () => {
-    // const { user, logout } = useAuth();
-    // const { uid, displayName, photoURL } = user || {};
+    const { user, logout } = useAuth();
+    const { uid, displayName, photoURL } = user || {};
 
     const navData = null ? afterLoginNavData : beforeLoginNavData;
     const { theme, toggleTheme } = useTheme();
-    // const { replace, refresh } = useRouter();
+    const { replace, refresh } = useRouter();
     const path = usePathname();
 
     const [navToggle, setNavToggle] = useState(false);
@@ -27,27 +27,27 @@ const Navbar = () => {
     //     [cart]
     // );
 
-    // const handleLogout = async () => {
-    //     const toastId = toast.loading("Loading...");
-    //     try {
-    //         await logout();
-    //         const res = await fetch("/api/auth/logout", {
-    //             method: "POST",
-    //         });
-    //         await res.json();
-    //         if (path.includes("/dashboard") || path.includes("/profile")) {
-    //             replace(`/login?redirectUrl=${path}`);
-    //         }
-    //         toast.dismiss(toastId);
-    //         toast.success("Successfully logout!");
-    //         startTransition(() => {
-    //             refresh();
-    //         });
-    //     } catch (error) {
-    //         toast.error("Successfully not logout!");
-    //         toast.dismiss(toastId);
-    //     }
-    // };
+    const handleLogout = async () => {
+        const toastId = toast.loading("Loading...");
+        try {
+            await logout();
+            const res = await fetch("/api/auth/logout", {
+                method: "POST",
+            });
+            await res.json();
+            if (path.includes("/dashboard") || path.includes("/profile")) {
+                replace(`/login?redirectUrl=${path}`);
+            }
+            toast.dismiss(toastId);
+            toast.success("Successfully logout!");
+            startTransition(() => {
+                refresh();
+            });
+        } catch (error) {
+            toast.error("Successfully not logout!");
+            toast.dismiss(toastId);
+        }
+    };
 
     return (
         <nav className="navbar sticky top-0 z-10 bg-slate-200 shadow-lg dark:bg-slate-900 lg:pr-3">
@@ -117,7 +117,7 @@ const Navbar = () => {
                     <div className="dropdown-end dropdown">
                         <label tabIndex={0} className="btn-ghost btn-circle avatar btn">
                             <div className="w-10 rounded-full">
-                                {/* <Image
+                                <Image
                                     alt="user-logo"
                                     title={displayName}
                                     src={
@@ -127,7 +127,7 @@ const Navbar = () => {
                                     width={40}
                                     height={40}
                                     className="h-10 w-10 rounded-full"
-                                /> */}
+                                />
                             </div>
                         </label>
                         <ul
@@ -135,7 +135,7 @@ const Navbar = () => {
                             className="menu-compact dropdown-content menu rounded-box mt-3 w-52 bg-base-100 p-2 shadow"
                         >
                             <li className="mb-2 mt-1 text-center font-semibold">
-                                {/* {displayName} */}
+                                {displayName}
                             </li>
                             <div className="divider my-0"></div>
                             <li className="mb-2">
